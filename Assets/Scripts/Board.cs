@@ -237,7 +237,10 @@ namespace Survivor
 
             if (m_enemyPoolCount < MaxEnemyPoolSize)
             {
-                m_enemyPool[m_enemyPoolCount] = AssetManager.Instance.GetEnemyGameObject(SpriteParent, balance.EnemyPrefabName[enemyType]);
+                m_enemyPool[m_enemyPoolCount] = AssetManager.Instance.GetEnemyGameObject(null, balance.EnemyPrefabName[enemyType]);
+                // Enemies are deliberately created at the root of the scene rather than
+                // under SpriteParent: IJobParallelForTransform distributes work per root
+                // hierarchy, so a shared parent would put every enemy on one worker thread.
 
                 Debug.Log("m_enemyPool[" + m_enemyPoolCount + "] " + m_enemyPool[m_enemyPoolCount].name);
 
