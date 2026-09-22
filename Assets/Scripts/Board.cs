@@ -121,21 +121,22 @@ namespace Survivor
         {
             for (int enemyIdx = 0; enemyIdx < m_enemyPoolCount; enemyIdx++)
             {
-                Debug.Log("HIDE() m_enemyPool[" + enemyIdx + "] " + m_enemyPool[enemyIdx].name);
                 m_enemyPool[enemyIdx].SetActive(false);
                 GameObject.Destroy(m_enemyPool[enemyIdx]);
                 m_enemyPool[enemyIdx] = null;
                 m_enemyPoolType[enemyIdx] = -1;
             }
+
             m_enemyPoolCount = 0;
             m_enemyPoolUnusedIndicesCount = 0;
 
-            if (m_enemyTransforms.isCreated) m_enemyTransforms.Dispose();
-            m_enemyTransforms = new TransformAccessArray(MaxEnemyPoolSize);
+            // Empty the TransformAccessArray without freeing it: the capacity is
+            // reused next game instead of reallocating native memory each time.
+            while (m_enemyTransforms.length > 0)
+                m_enemyTransforms.RemoveAtSwapBack(m_enemyTransforms.length - 1);
+
             for (int i = 0; i < MaxEnemyPoolSize; i++)
-            {
                 m_poolToEnemyIndex[i] = -1;
-            }
 
             m_player.SetActive(false);
 
